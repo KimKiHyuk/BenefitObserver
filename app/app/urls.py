@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from celery_app.views import celery_view
-from django.conf.urls import url
+from django.conf.urls import url, include
 from rest_framework_swagger.views import get_swagger_view
 
 schema_view = get_swagger_view(title='HALLYM STUDY API')
@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^$', schema_view),
     path('admin/', admin.site.urls),
     path('celerytask/', celery_view),
+    url(r'^$', include('celery_app.urls')),
 ]
