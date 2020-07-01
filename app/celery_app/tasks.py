@@ -10,9 +10,9 @@ def celery_task(counter):
     return '{} Done!'.format(counter)
 
 
-@app.task(name='celery_app.tasks.add_item')
-def add_item(item):
-    item = json.loads(item)
-    print(item)
+# @app.task(name='celery_app.tasks.add_item')
+# def add_item(item):
+#     item = json.loads(item)
+#     print(item)
 
-    return '1'
+#     return '1'

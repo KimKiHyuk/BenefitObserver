@@ -21,6 +21,7 @@ class HallymSoftwareSpider(CrawlSpider):
         urls = [
             'https://sw.hallym.ac.kr/index.php?mp=5_1'
         ]
+
         for url in urls:
             yield scrapy.Request(url=url, callback=self.parse_item)
 

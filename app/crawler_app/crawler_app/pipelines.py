@@ -9,13 +9,12 @@ from __future__ import absolute_import
 from itemadapter import ItemAdapter
 import json
 import sys
-from celery_app.tasks import *
-
+#from celery_app.tasks import *
+from .tasks import add_item
 from scrapy.utils.serialize import ScrapyJSONEncoder
 _encoder = ScrapyJSONEncoder()
 
 class CrawlerAppPipeline:
     def process_item(self, item, spider):
         add_item.delay(_encoder.encode(item))
-        
         return item
