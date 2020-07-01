@@ -22,6 +22,13 @@ logging.getLogger().addHandler(logging.StreamHandler())
 SPIDER_MODULES = ['crawler_app.spiders']
 NEWSPIDER_MODULE = 'crawler_app.spiders'
 
+# set the default Django settings module for the 'celery' program.
+import os, sys
+directory = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(directory)
+# DJANGO INTEGRATION
+# set the default Django settings module for the 'celery' program.
+
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'crawler_app (+http://www.yourdomain.com)'
@@ -72,9 +79,9 @@ ROBOTSTXT_OBEY = False
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'crawler_app.pipelines.CrawlerAppPipeline': 300,
-#}
+ITEM_PIPELINES = {
+   'crawler_app.pipelines.CrawlerAppPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
