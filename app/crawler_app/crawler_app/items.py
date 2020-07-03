@@ -10,6 +10,3 @@ class CrawlerAppItem(Item):
     # define the fields for your item here like:
     log = Field()
     timestamp = Field()
-
-    def toJson(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)

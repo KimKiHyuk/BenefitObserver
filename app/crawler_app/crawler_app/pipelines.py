@@ -12,12 +12,9 @@ sys.path.append("/home/key/repository/BenefitObserver/app/crawler_app/crawler_ap
 from itemadapter import ItemAdapter
 import json
 #from celery_app.tasks import *
-from scrapy.utils.serialize import ScrapyJSONEncoder
-_encoder = ScrapyJSONEncoder()
-print('fuckung', os.getcwd())
 from tasks import add_item
 
 class CrawlerAppPipeline:
     def process_item(self, item, spider):
-        add_item.delay(_encoder.encode(item))
+        add_item.delay(json.dumps(item.__dict__['_values']))
         return item

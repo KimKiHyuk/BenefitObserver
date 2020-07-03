@@ -1,16 +1,19 @@
 from django.apps import AppConfig
 from django.db import models
 import pika
+import json
 from datetime import datetime
 from multiprocessing import Process
 
 
 def callback(ch, method, properties, body):
     from celery_app.models import CrawlerTask
-    print(" [x] Received %r" % body)
+    
+    loads = json.loads(body)
+    print(loads)
     mid = CrawlerTask(
-        log=body,
-        done_at=datetime.now()
+        log=loads['log'],
+        done_at=loads['timestamp']
     )
     
     mid.save()
