@@ -39,8 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework_swagger',
     'rest_framework',
-    'celery_app',
-    'board_app'
+    # 'celery_app',
+    'celery_app.apps.CeleryAppConfig',
+    'board_app',
+    'crawler_app',
 ]
 
 REST_FRAMEWORK = {
@@ -130,4 +132,7 @@ STATIC_URL = '/static/'
 
 # CELERY
 
-CELERY_BROKER_URL = 'amqp://localhost'
+CELERY_BROKER_URL = broker_info
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

@@ -38,7 +38,8 @@ class HallymSoftwareSpider(CrawlSpider):
     def spider_closed(self, spider):
         spider.logger.info('Hallym Spider closed: %s', spider.name)
         if connection is not None:
-           connection.close()
+            spider.logger.info('=== end stream ===')
+            connection.close()
 
     def parse_item(self, response):
         raw_url = response.xpath('/html/body/div/div[3]/div[2]/div[2]/table/tbody/tr/td[2]/a/@href').extract()
