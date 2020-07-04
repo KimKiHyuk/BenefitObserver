@@ -26,12 +26,10 @@ NEWSPIDER_MODULE = 'crawler_app.spiders'
 # set the default Django settings module for the 'celery' program.
 
 import os, json, sys
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.abspath(os.path.join('.', os.pardir)))
 secret_file = os.path.join(BASE_DIR, 'secrets.json')
 with open(secret_file) as f:
     secrets = json.loads(f.read())
-
-sys.path.append(os.path.dirname(BASE_DIR))
 
 CELERY_BROKER_URL = secrets['RABBITMQ_CONNECTION']
 CELERY_ACCEPT_CONTENT = ['application/json']
