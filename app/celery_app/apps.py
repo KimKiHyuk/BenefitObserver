@@ -4,7 +4,9 @@ import pika
 import json
 from datetime import datetime
 from multiprocessing import Process
-
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from app.settings import CELERY_BROKER_URL
 
 def callback(ch, method, properties, body):
     from celery_app.models import CrawlerTask
@@ -19,7 +21,7 @@ def callback(ch, method, properties, body):
     mid.save()
 
 def initalize():
-    connection = pika.BlockingConnection(pika.URLParameters(broker_info))
+    connection = pika.BlockingConnection(pika.URLParameters(CELERY_BROKER_URL))
     channel = connection.channel()
     channel.queue_declare(queue='crawler')
     channel.basic_consume(queue='crawler', auto_ack=True, on_message_callback=callback)
@@ -31,7 +33,6 @@ class CeleryAppConfig(AppConfig):
 
 
     def ready(self):
-        print('go')
         Process(target=initalize).start()
         
 

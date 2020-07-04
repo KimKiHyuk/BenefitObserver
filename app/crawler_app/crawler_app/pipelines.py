@@ -7,8 +7,7 @@
 # useful for handling different item types with a single interface
 from __future__ import absolute_import
 import os, sys
-directory = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append("/home/key/repository/BenefitObserver/app/crawler_app/crawler_app")
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from itemadapter import ItemAdapter
 import json
 #from celery_app.tasks import *

@@ -1,9 +1,7 @@
 import os, sys
-directory = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append("/home/key/repository/BenefitObserver/app/crawler_app/crawler_app")
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 import json
-from settings import channel
-from settings import celery_instance
+from crawler_app.crawler_app.settings import channel, celery_instance
 
 @celery_instance.task(name='celery_app.tasks.add_item')
 

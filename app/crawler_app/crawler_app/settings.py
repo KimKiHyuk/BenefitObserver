@@ -24,15 +24,24 @@ SPIDER_MODULES = ['crawler_app.spiders']
 NEWSPIDER_MODULE = 'crawler_app.spiders'
 
 # set the default Django settings module for the 'celery' program.
-import os, sys
-directory = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(directory)
 
-celery_instance = Celery('celery_app', backend='amqp', broker=broker_security_connection_info)
+import os, json, sys
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+secret_file = os.path.join(BASE_DIR, 'secrets.json')
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+sys.path.append(os.path.dirname(BASE_DIR))
+
+CELERY_BROKER_URL = secrets['RABBITMQ_CONNECTION']
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+celery_instance = Celery('celery_app', backend='amqp', broker=CELERY_BROKER_URL)
 
 import pika
-
-connection = pika.BlockingConnection(pika.URLParameters(broker_security_connection_info))
+connection = pika.BlockingConnection(pika.URLParameters(CELERY_BROKER_URL))
 channel = connection.channel()
 channel.queue_declare(queue='crawler')
 
