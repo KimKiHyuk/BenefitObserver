@@ -6,13 +6,16 @@
 
 # useful for handling different item types with a single interface
 from __future__ import absolute_import
+import os, sys
+directory = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append("/home/key/repository/BenefitObserver/app/crawler_app/crawler_app")
 from itemadapter import ItemAdapter
 import json
-import sys
 #from celery_app.tasks import *
-from .tasks import add_item
 from scrapy.utils.serialize import ScrapyJSONEncoder
 _encoder = ScrapyJSONEncoder()
+print('fuckung', os.getcwd())
+from tasks import add_item
 
 class CrawlerAppPipeline:
     def process_item(self, item, spider):

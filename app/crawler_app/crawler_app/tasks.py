@@ -1,9 +1,12 @@
-from celery import Celery
+import os, sys
+directory = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append("/home/key/repository/BenefitObserver/app/crawler_app/crawler_app")
 import json
-app = Celery('celery_app', backend='amqp', broker='amqp://key:fkdbeh41@localhost:5672/key_host')
+from settings import channel
+from settings import celery_instance
 
-
-@app.task(name='celery_app.tasks.add_item')
+@celery_instance.task(name='celery_app.tasks.add_item')
 def add_item(item):
-     item = json.loads(item)
-     return item
+    channel.basic_publish(exchange='', routing_key='crawler', body=item)
+
+    return 'OK'

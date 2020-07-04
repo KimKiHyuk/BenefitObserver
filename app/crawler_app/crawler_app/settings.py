@@ -9,6 +9,7 @@
 
 BOT_NAME = 'crawler_app'
 import logging
+from celery import Celery
 from scrapy.utils.log import configure_logging
 
 configure_logging(install_root_handler=False)
@@ -26,6 +27,14 @@ NEWSPIDER_MODULE = 'crawler_app.spiders'
 import os, sys
 directory = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(directory)
+
+celery_instance = Celery('celery_app', backend='amqp', broker=broker_security_connection_info)
+
+import pika
+
+connection = pika.BlockingConnection(pika.URLParameters(broker_security_connection_info))
+channel = connection.channel()
+channel.queue_declare(queue='crawler')
 
 # DJANGO INTEGRATION
 # set the default Django settings module for the 'celery' program.
