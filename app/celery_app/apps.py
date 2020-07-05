@@ -10,16 +10,23 @@ from app.settings import CELERY_BROKER_URL
 
 def callback(ch, method, properties, body):
     from celery_app.models import CrawlerTask
+    from board_app.models import Posts, Url
     
     loads = json.loads(body)
-    print(loads)
-    mid = CrawlerTask(
+
+    CrawlerTask.objects.create(
         log=loads['log'],
         done_at=loads['timestamp']
     )
-    
-    mid.save()
 
+    for post in loads['log']:
+        url_obj, created = Url.objects.get_or_create(
+            url=post['url']
+        )
+        Posts.objects.get_or_create(
+            title=post['title'],
+            url=url_obj
+        )
 def initalize():
     connection = pika.BlockingConnection(pika.URLParameters(CELERY_BROKER_URL))
     channel = connection.channel()

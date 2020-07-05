@@ -18,10 +18,11 @@ from django.urls import path
 from django.conf.urls import url, include
 from rest_framework_swagger.views import get_swagger_view
 
-schema_view = get_swagger_view(title='HALLYM STUDY API')
+schema_view = get_swagger_view(title='HALLYM STUDY CRAWLER API')
 
 urlpatterns = [
-    url(r'^$', schema_view),
+    path('docs/', schema_view),
     path('admin/', admin.site.urls),
     path('celery/', include('celery_app.urls')),
+    path('board/', include('board_app.urls'))
 ]
