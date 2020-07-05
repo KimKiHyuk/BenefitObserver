@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 
 class Posts(models.Model):
+    objects = models.Manager()
     title = models.CharField(max_length=200)
     url = models.ForeignKey('board_app.Url', on_delete=models.CASCADE, default=None)
     created_at = models.DateTimeField(auto_now_add=True)
