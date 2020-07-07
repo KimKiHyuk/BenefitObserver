@@ -3,7 +3,6 @@ from django.shortcuts import HttpResponse
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
 from .models import CrawlerTask
-from .tasks import celery_task
 from .serializers import CelerySerializer
 from django.core.exceptions import ObjectDoesNotExist
 import json

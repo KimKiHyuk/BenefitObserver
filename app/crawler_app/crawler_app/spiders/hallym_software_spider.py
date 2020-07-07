@@ -8,7 +8,6 @@ from scrapy import signals
 from scrapy import Spider
 import pika
 import sys
-from ..settings import connection
 
 class HallymSoftwareSpider(CrawlSpider):
     root_url = 'https://sw.hallym.ac.kr/'
@@ -37,9 +36,6 @@ class HallymSoftwareSpider(CrawlSpider):
 
     def spider_closed(self, spider):
         spider.logger.info('Hallym Spider closed: %s', spider.name)
-        if connection is not None:
-            spider.logger.info('=== end stream ===')
-            connection.close()
 
     def parse_item(self, response):
         raw_url = response.xpath('/html/body/div/div[3]/div[2]/div[2]/table/tbody/tr/td[2]/a/@href').extract()

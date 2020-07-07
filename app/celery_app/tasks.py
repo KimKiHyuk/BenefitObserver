@@ -1,18 +1,31 @@
 from celery import shared_task
 from app.celery import app
+from .models import CrawlerTask
 import time
 import json
+from celery import Celery
+from celery.task import task, subtask
+from datetime import date
+from celery.utils.log import get_task_logger
+from django.utils.dateparse import parse_date
+log1 = get_task_logger(__name__)
 
-@shared_task
-def celery_task(counter):
-    email = "hassanzadeh.sd@gmail.com"
-    time.sleep(3)
-    return '{} Done!'.format(counter)
 
+@task(name='celery_app.crawler.sw')
+def sw(**kwargs):
+    print('runnging log!')
+    from celery_app.models import CrawlerTask
+    from board_app.models import Posts, Url
 
-# @app.task(name='celery_app.tasks.add_item')
-# def add_item(item):
-#     item = json.loads(item)
-#     print(item)
+    CrawlerTask.objects.create(
+        log=json.dumps(kwargs['data']),
+    )
 
-#     return '1'
+    for post in kwargs['data']['log']:
+        url_obj, _ = Url.objects.get_or_create(
+            url=post['url']
+        )
+        Posts.objects.get_or_create(
+            title=post['title'],
+            url=url_obj
+        )

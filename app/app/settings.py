@@ -42,8 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework_swagger',
     'rest_framework',
-    # 'celery_app',
-    'celery_app.apps.CeleryAppConfig',
+    'celery_app',
+    #'celery_app.apps.CeleryAppConfig', only for using pika client
     'board_app',
     'crawler_app',
 ]
@@ -138,3 +138,4 @@ CELERY_BROKER_URL = secrets['RABBITMQ_CONNECTION']
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+CELERY_IMPORT = ['celery_app.crawler.sw']

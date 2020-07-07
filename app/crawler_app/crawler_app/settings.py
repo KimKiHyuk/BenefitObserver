@@ -9,7 +9,6 @@
 
 BOT_NAME = 'crawler_app'
 import logging
-from celery import Celery
 from scrapy.utils.log import configure_logging
 
 configure_logging(install_root_handler=False)
@@ -26,22 +25,14 @@ NEWSPIDER_MODULE = 'crawler_app.spiders'
 # set the default Django settings module for the 'celery' program.
 
 import os, json, sys
-BASE_DIR = os.path.dirname(os.path.abspath(os.path.join('.', os.pardir)))
-secret_file = os.path.join(BASE_DIR, 'secrets.json')
-with open(secret_file) as f:
-    secrets = json.loads(f.read())
 
-CELERY_BROKER_URL = secrets['RABBITMQ_CONNECTION']
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
 
-celery_instance = Celery('celery_app', backend='amqp', broker=CELERY_BROKER_URL)
+from celery import Celery
 
-import pika
-connection = pika.BlockingConnection(pika.URLParameters(CELERY_BROKER_URL))
-channel = connection.channel()
-channel.queue_declare(queue='crawler')
+app = Celery("celery_app")
+app.config_from_object("celeryconfig")
+
+
 
 # DJANGO INTEGRATION
 # set the default Django settings module for the 'celery' program.

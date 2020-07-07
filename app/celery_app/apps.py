@@ -40,6 +40,6 @@ class CeleryAppConfig(AppConfig):
 
 
     def ready(self):
-        Process(target=initalize).start()
-        
+        #Process(target=initalize).start()
+        pass
 
