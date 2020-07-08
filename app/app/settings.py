@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     #'celery_app.apps.CeleryAppConfig', only for using pika client
     'board_app',
     'crawler_app',
+    'auth_app'
 ]
 
 REST_FRAMEWORK = {

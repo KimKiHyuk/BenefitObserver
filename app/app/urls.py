@@ -24,5 +24,6 @@ urlpatterns = [
     path('docs/', schema_view),
     path('admin/', admin.site.urls),
     path('celery/', include('celery_app.urls')),
-    path('board/', include('board_app.urls'))
+    path('board/', include('board_app.urls')),
+    path('auth/', include('auth_app.urls'))
 ]
