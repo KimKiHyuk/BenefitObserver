@@ -10,10 +10,14 @@ from celery.utils.log import get_task_logger
 from django.utils.dateparse import parse_date
 log1 = get_task_logger(__name__)
 
+@app.task
+def push_fcm(**kwargs):
+    from subscribe_app.models import Subscribe
+
+    _all = Subscribe.objects.all()
 
 @task(name='celery_app.crawler.sw')
 def sw(**kwargs):
-    print('runnging log!')
     from celery_app.models import CrawlerTask
     from board_app.models import Posts, Url
 
@@ -25,7 +29,10 @@ def sw(**kwargs):
         url_obj, _ = Url.objects.get_or_create(
             url=post['url']
         )
-        Posts.objects.get_or_create(
+        _, created = Posts.objects.get_or_create(
             title=post['title'],
             url=url_obj
         )
+
+        if created:
+            push_fcm.delay()
