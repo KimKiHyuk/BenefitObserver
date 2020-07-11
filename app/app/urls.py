@@ -25,5 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('celery/', include('celery_app.urls')),
     path('board/', include('board_app.urls')),
-    path('auth/', include('auth_app.urls'))
+    path('auth/', include('auth_app.urls')),
+    path('subscribe/', include('subscribe_app.urls'))
 ]

@@ -1,23 +1,28 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
+from rest_framework import generics
 from .models import Auth
+from .serializers import *
+import json
 from rest_framework.decorators import api_view
+from rest_framework import serializers
 # Create your views here.
 
-@api_view(['POST'])
-def register_token(request):
-    auth = request.headers.get('Authorization')
+class AuthUserCreateView(generics.CreateAPIView):
 
-    if auth is None:
-        return JsonResponse({"message": "FCM Token is empty"}, status=401)
+    def post(self, request, *args, **kwargs):
 
-    # validate token
+        ser = UserSerializer(data=request.data)
+        if ser.is_valid() is False:
+            print(ser.errors)
+            return JsonResponse({"message":"user validation failed"} , status=401)
+        
+        transcation = ser.save()
 
-    try:
-        Auth.obejcts.get_or_create(
-            token=auth
-        )
-    except Exception as err:
-        return JsonResponse({"message": "could not register FCM Token"}, status=404)
+        if transcation is None:
+            return JsonResponse({"message":"auth validation failed"} , status=401)
 
-    return JsonResponse({"message": "OK"}, status=200)
+        return JsonResponse(ser.data , status=201)
+
+
+

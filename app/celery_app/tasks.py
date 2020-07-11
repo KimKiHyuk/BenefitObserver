@@ -12,9 +12,11 @@ log1 = get_task_logger(__name__)
 
 @app.task
 def push_fcm(**kwargs):
-    from subscribe_app.models import Subscribe
+    from subscribe_app.models import Auth_Subscribe
+    _all = Auth_Subscribe.objects.filter(kwargs[''])
 
-    _all = Subscribe.objects.all()
+    print(kwargs)
+    print(_all)
 
 @task(name='celery_app.crawler.sw')
 def sw(**kwargs):
@@ -35,4 +37,4 @@ def sw(**kwargs):
         )
 
         if created:
-            push_fcm.delay()
+            push_fcm.delay(kwargs={'hi':'hello'})
