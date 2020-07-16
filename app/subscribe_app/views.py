@@ -6,8 +6,7 @@ from .models import *
 # Create your views here.
 
 
-from django.shortcuts import render
-from django.http import JsonResponse, HttpResponse
+from auth_app.models import *
 from rest_framework import generics
 from .serializers import *
 import json
@@ -34,15 +33,17 @@ class UserSubscribeCreateView(generics.CreateAPIView):
 class UserSubscribeFetchView(generics.ListAPIView):
     serializer_class = UserSubscribeSerializer
     def get_queryset(self):
-        user = self.kwargs['token']
-
-        return Auth_Subscribe.objects.filter(user=user)
+        auth = Auth.objects.filter(token=self.kwargs['token']).first()
+        print(auth, auth.id)
+        user = User.objects.get(id=auth.id)
+        print(user, user.id)
+        return Auth_Subscribe.objects.filter(user=2)
 
     def get(self, request, token):
         user_auth = self.get_queryset()
         print(user_auth)
 
-        ser = UserSubscribeSerializer(user_auth, many=True)
-        
+        #ser = UserSubscribeSerializer(user_auth, many=True)
+        ser = SubscribeSerializer(user_auth, many=True)
         return JsonResponse(ser.data, status=200, safe=False)
    

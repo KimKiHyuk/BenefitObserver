@@ -10,7 +10,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def validate(self, data):
-        if data.get('subscribe') is None:
+        if data.get('topic') is None:
             return False
         return data
 
@@ -21,12 +21,15 @@ class SubscribeSerializer(serializers.ModelSerializer):
         return self.instance
 
     def create(self, validated_data):
-        instance, _ = Subscribe.objects.get_or_create(validated_data['subscribe'])
+        instance = Subscribe.objects.get_or_create(topic=validated_data['topic'])
+        print(instance)
 
         return instance
 
-
-class UserSubscribeSerializer(serializers.ModelSerializer):
+class UserSubscribeSerializer(serializers.Serializer):
+    token = serializers.CharField(required=True, trim_whitespace=True)
+    subscribes = serializers.JSONField(required=True)
+        
     class Meta:
         model = Auth_Subscribe
         fields = "__all__"
@@ -43,43 +46,36 @@ class UserSubscribeSerializer(serializers.ModelSerializer):
         return data
 
     def save(self, **kwargs):
+        instances = []
         print('save')
-        users = UserSerializer(data=self.validated_data['token'])
-        subscribea = SubscribeSerializer(data=self.validated_data['subscribes'])
-        
-        saved_user_instance = users.save()
-        saved_subscribe_instance = subscribea.save()
 
-        return self.create({"user":saved_user_instance, "subscribe" : saved_subscribe_instance})
-        # or update
-        #return instance
+        users = UserSerializer(data={"Authorization": {"token" : self.validated_data['token']}})
+        if users.is_valid() is False:
+            print('user', users.errors)
+            return None
+
+        for subscribe in self.validated_data['subscribes']:
+            subscribe = SubscribeSerializer(data={"topic" : subscribe})
+            if subscribe.is_valid() is False:
+                print('subscribe', subscribe.errors)
+                continue
+            
+            saved_user_instance = users.save()
+            saved_subscribe_instance = subscribe.save()
+            instances.append(self.create({"user_id":saved_user_instance.id, "subscribe" : saved_subscribe_instance}))
+        
+        return instances
 
     def create(self, validated_data):
-
+        print('last create', validated_data)
         instance, _ = Auth_Subscribe.objects.get_or_create(**validated_data)
         
         return instance
         #return user
+    def update(self, validated_data):
+        instance, _ = Auth_Subscribe.objects.update(**validated_data)
+        
+        return instance
 
 
 
-
-# class SubscribeSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Subscribe
-#         fields = "__all__"
-
-
-# class SubscribeListSerializer(serializers.ModelSerializer):
-#     profile = ProfileSerializer()
-
-#     class Meta:
-#         model = User
-#         fields = ['username', 'email', 'profile']
-
-#     def create(self, validated_data):
-#         profile_data = validated_data.pop('profile')
-#         user = User.objects.create(**validated_data)
-#         Profile.objects.create(user=user, **profile_data)
-#         return user   
-#     pass
