@@ -21,6 +21,10 @@ class AuthSerializer(serializers.ModelSerializer):
 
         return instance
 
+    
+    def get_serializer_class(self):
+        return AuthSerializer
+
 
 class UserSerializer(serializers.ModelSerializer):
     Authorization = AuthSerializer(source='auth')
@@ -49,3 +53,4 @@ class UserSerializer(serializers.ModelSerializer):
         
         return user
         #return user
+

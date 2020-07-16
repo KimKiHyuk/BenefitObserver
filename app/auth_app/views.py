@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework import serializers
 # Create your views here.
 
+
 class AuthUserCreateView(generics.CreateAPIView):
 
     def post(self, request, *args, **kwargs):
@@ -23,6 +24,10 @@ class AuthUserCreateView(generics.CreateAPIView):
             return JsonResponse({"message":"auth validation failed"} , status=401)
 
         return JsonResponse(ser.data , status=201)
+
+    
+    def get_serializer_class(self):
+        return UserSerializer
 
 
 

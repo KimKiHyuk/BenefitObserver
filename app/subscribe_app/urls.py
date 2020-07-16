@@ -5,5 +5,6 @@ from . import views
 app_name = 'subscribe_app'
 
 urlpatterns = [
-    url(r'^', views.update_subscribe)
+    path('', views.UserSubscribeCreateView.as_view()),
+    path('<str:token>/', views.UserSubscribeFetchView.as_view())
 ]
