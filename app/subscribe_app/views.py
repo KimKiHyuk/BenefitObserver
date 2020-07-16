@@ -37,13 +37,12 @@ class UserSubscribeFetchView(generics.ListAPIView):
         print(auth, auth.id)
         user = User.objects.get(id=auth.id)
         print(user, user.id)
-        return Auth_Subscribe.objects.filter(user=2)
+        return Auth_Subscribe.objects.filter(user=user.id)
 
     def get(self, request, token):
         user_auth = self.get_queryset()
         print(user_auth)
 
-        #ser = UserSubscribeSerializer(user_auth, many=True)
         ser = SubscribeSerializer(user_auth, many=True)
         return JsonResponse(ser.data, status=200, safe=False)
    

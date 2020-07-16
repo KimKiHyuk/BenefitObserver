@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import *
 from auth_app.serializers import UserSerializer
 from django.http import JsonResponse, HttpResponse
-
+from auth_app.models import *
 
 class SubscribeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,28 +47,29 @@ class UserSubscribeSerializer(serializers.Serializer):
 
     def save(self, **kwargs):
         instances = []
-        print('save')
 
-        users = UserSerializer(data={"Authorization": {"token" : self.validated_data['token']}})
-        if users.is_valid() is False:
-            print('user', users.errors)
-            return None
+        auth = Auth.objects.filter(token=self.validated_data['token']).first()
+        print(auth, auth.id)
+        user = User.objects.get(id=auth.id)
+        print(user, user.id)
+        auth_subscribe = Auth_Subscribe.objects.filter(user=user.id)
+        print('my item', auth_subscribe)
 
+        Auth_Subscribe.objects.filter(user_id=user.id).delete()
         for subscribe in self.validated_data['subscribes']:
-            subscribe = SubscribeSerializer(data={"topic" : subscribe})
-            if subscribe.is_valid() is False:
-                print('subscribe', subscribe.errors)
-                continue
+            try:
+                subc = Subscribe.objects.get(topic=subscribe)
+                instances.append(self.create({"user_id":user.id, "subscribe" : subc}))
+            except:
+                pass
             
-            saved_user_instance = users.save()
-            saved_subscribe_instance = subscribe.save()
-            instances.append(self.create({"user_id":saved_user_instance.id, "subscribe" : saved_subscribe_instance}))
+        
         
         return instances
 
     def create(self, validated_data):
         print('last create', validated_data)
-        instance, _ = Auth_Subscribe.objects.get_or_create(**validated_data)
+        instance, _ = Auth_Subscribe.objects.create(**validated_data)
         
         return instance
         #return user
