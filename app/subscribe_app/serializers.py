@@ -50,7 +50,7 @@ class UserSubscribeSerializer(serializers.Serializer):
 
         auth = Auth.objects.filter(token=self.validated_data['token']).first()
         print(auth, auth.id)
-        user = User.objects.get(id=auth.id)
+        user = User.objects.get(auth_id=auth.id)
         print(user, user.id)
         auth_subscribe = Auth_Subscribe.objects.filter(user=user.id)
         print('my item', auth_subscribe)
