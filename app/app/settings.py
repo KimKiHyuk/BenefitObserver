@@ -47,8 +47,22 @@ INSTALLED_APPS = [
     'board_app',
     'crawler_app',
     'auth_app',
-    'subscribe_app'
+    'subscribe_app',
+    "fcm_django"
 ]
+
+FCM_DJANGO_SETTINGS = {
+    "APP_VERBOSE_NAME": "Firebase",
+         # default: _('FCM Django')
+    "FCM_SERVER_KEY": secrets['FIREBASE_KEY'],
+         # true if you want to have only one active device per registered user at a time
+         # default: False
+    "ONE_DEVICE_PER_USER": True,
+         # devices to which notifications cannot be sent,
+         # are deleted upon receiving error response from FCM
+         # default: False
+    "DELETE_INACTIVE_DEVICES": True
+}
 
 REST_FRAMEWORK = {
 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
