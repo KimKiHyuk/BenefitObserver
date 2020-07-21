@@ -25,6 +25,12 @@ class SubscribeSerializer(serializers.ModelSerializer):
         print(instance)
 
         return instance
+class UserSubscribeModelSerializer(serializers.ModelSerializer):
+    subscribe = SubscribeSerializer()
+
+    class Meta:
+        model = Auth_Subscribe
+        fields = ("subscribe", )
 
 class UserSubscribeSerializer(serializers.Serializer):
     token = serializers.CharField(required=True, trim_whitespace=True)
@@ -49,11 +55,8 @@ class UserSubscribeSerializer(serializers.Serializer):
         instances = []
 
         auth = Auth.objects.filter(token=self.validated_data['token']).first()
-        print(auth, auth.id)
         user = User.objects.get(auth_id=auth.id)
-        print(user, user.id)
         auth_subscribe = Auth_Subscribe.objects.filter(user=user.id)
-        print('my item', auth_subscribe)
 
         Auth_Subscribe.objects.filter(user_id=user.id).delete()
         for subscribe in self.validated_data['subscribes']:
@@ -62,13 +65,10 @@ class UserSubscribeSerializer(serializers.Serializer):
                 instances.append(self.create({"user_id":user.id, "subscribe" : subc}))
             except:
                 pass
-            
-        
-        
+
         return instances
 
     def create(self, validated_data):
-        print('last create', validated_data)
         instance, _ = Auth_Subscribe.objects.create(**validated_data)
         
         return instance

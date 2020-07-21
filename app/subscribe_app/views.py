@@ -16,6 +16,7 @@ from rest_framework import serializers
 
 
 class UserSubscribeCreateView(generics.CreateAPIView):
+    serializer_class = UserSubscribeSerializer
     def post(self, request, *args, **kwargs):
         print("view ", request.data)
         ser = UserSubscribeSerializer(data=request.data);
@@ -26,23 +27,37 @@ class UserSubscribeCreateView(generics.CreateAPIView):
             return JsonResponse({"message":ser.errors}, status=401)
      
         return JsonResponse({"message":"ok"}, status=201)
- 
-    def get_serializer_class(self):
-        return UserSubscribeSerializer
+
+class SubscribeListView(generics.ListAPIView):
+    serializer_class = SubscribeSerializer
+
+    def get(self, request):
+        subscribes = Subscribe.objects.all()
+
+        ser = SubscribeSerializer(subscribes, many=True)
+
+        return JsonResponse(ser.data, status=200, safe=False) 
 
 class UserSubscribeFetchView(generics.ListAPIView):
-    serializer_class = UserSubscribeSerializer
-    def get_queryset(self):
-        auth = Auth.objects.filter(token=self.kwargs['token']).first()
-        print(auth, auth.id)
-        user = User.objects.get(id=auth.id)
-        print(user, user.id)
+    serializer_class = UserSubscribeModelSerializer
+    def get_queryset(self, authorizaton):
+        auth = Auth.objects.filter(token=authorizaton).first()
+
+        if auth is None:
+            return None
+        print(auth.id)
+        user = User.objects.get(auth_id=auth.id)
         return Auth_Subscribe.objects.filter(user=user.id)
 
-    def get(self, request, token):
-        user_auth = self.get_queryset()
-        print(user_auth)
+    def get(self, request):
 
-        ser = SubscribeSerializer(user_auth, many=True)
+        if 'Authorization' in request.headers.keys():
+            user_auth = self.get_queryset(request.headers['Authorization'])
+        else:
+            return JsonResponse({"message":"empty token"}, status=401)
+        if user_auth is None:
+            return JsonResponse({"message": "first of all, you have to register your token"})
+        ser = UserSubscribeModelSerializer(user_auth, many=True)
+
         return JsonResponse(ser.data, status=200, safe=False)
    
