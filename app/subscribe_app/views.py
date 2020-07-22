@@ -45,7 +45,6 @@ class UserSubscribeFetchView(generics.ListAPIView):
 
         if auth is None:
             return None
-        print(auth.id)
         user = User.objects.get(auth_id=auth.id)
         return Auth_Subscribe.objects.filter(user=user.id)
 
@@ -59,5 +58,9 @@ class UserSubscribeFetchView(generics.ListAPIView):
             return JsonResponse({"message": "first of all, you have to register your token"})
         ser = UserSubscribeModelSerializer(user_auth, many=True)
 
-        return JsonResponse(ser.data, status=200, safe=False)
+        response = {"subscribes" : []}
+        for s in ser.data:
+            response['subscribes'].append(s['subscribe']['topic'])
+
+        return JsonResponse(response, status=200, safe=False)
    
