@@ -14,7 +14,7 @@ import os, json
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 secret_file = os.path.join(BASE_DIR, 'secrets.json')
-with open(secret_file) as f:
+with open('secrets.json') as f:
     secrets = json.loads(f.read())
 
 
