@@ -5,5 +5,5 @@ from . import views
 app_name = 'board_app'
 
 urlpatterns = [
-    url(r'^get_notices/', views.get_notices)
+    url(r'^notice/list/', views.get_notices)
 ]

@@ -5,6 +5,6 @@ from . import views
 app_name = 'celery_app'
 
 urlpatterns = [
-    path('sync_notices/', views.sync_notices),
-    path('get_job_log/', views.get_log)
+    path('async/notice/', views.sync_notices),
+    path('async/log/', views.get_log)
 ]
