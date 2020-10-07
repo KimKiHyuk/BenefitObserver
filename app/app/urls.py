@@ -21,10 +21,10 @@ from rest_framework_swagger.views import get_swagger_view
 schema_view = get_swagger_view(title='HALLYM STUDY CRAWLER API')
 
 urlpatterns = [
-    path('docs/', schema_view),
-    path('admin/', admin.site.urls),
-    path('celery/', include('celery_app.urls')),
-    path('board/', include('board_app.urls')),
-    path('auth/', include('auth_app.urls')),
-    path('subscribe/', include('subscribe_app.urls'))
+    path('v1/docs/', schema_view),
+    path('v1/admin/', admin.site.urls),
+    path('v1/celery/', include('celery_app.urls')),
+    path('v1/board/', include('board_app.urls')),
+    path('v1/auth/', include('auth_app.urls')),
+    path('v1/subscribe/', include('subscribe_app.urls'))
 ]
